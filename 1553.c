@@ -10,9 +10,11 @@ void brmBCexample(void)
 	 u16 data16;
 
 	 print("Simple BC transmission\n\n\r");
-
+	 // Notice to enable Sim All in the composer
 	 brmSingleRegWrite (0x0003,0x0001); //perform SW reset
 	 brmSingleRegWrite (0x0001,0x0040); //enable BC mode in config 1 register
+	 // if we put 0x140 auto repeat enabled and it will transmitt forever. page 67
+	 //in that case need to configure 102,103
 
 	data16 = brmSingleRegRead (0x0001);
 	xil_printf("read register: %0x \n\r",data16);
@@ -59,26 +61,26 @@ void brmBCexample(void)
 	xil_printf("check read mem_addr 0x000B %0x \n\r",data16);// 0120
 
 	//setup stack values pointers
-	brmSingleMemWrite (0x0100,0x0000);
-	brmSingleMemWrite (0x0101,0xFFFB);
-
+	brmSingleMemWrite (0x0100,0x0000); // go to 0 address
+	brmSingleMemWrite (0x0101,0xFFFB); //send 4 frames
+	//brmSingleMemWrite (0x0101,0xFFFC); //send 3 frames
 
 	//Define command list
 
 	brmSingleMemWrite(0x01A0, 0x0000); // control word
 
-	brmSingleMemWrite(0x01A1, 0xC023); // the command
+	brmSingleMemWrite(0x01A1, 0xC023); // the command. rt 24. 3 words. sa 1. receive.
 	brmSingleMemWrite(0x01A2, 0x0000); // fill up the memory
 	brmSingleMemWrite(0x01A3, 0x1111);
 	brmSingleMemWrite(0x01A4, 0x2222);
-	brmSingleMemWrite(0x0160, 0x0080); // control word . Bus A
+	brmSingleMemWrite(0x0160, 0x0080); // control word . Bus A.
 	brmSingleMemWrite(0x0161, 0xCC24); // Command to another RT 25, SA1 ,transmit, 4 words
 	brmSingleMemWrite(0x0120, 0x0080); // control word . Bus A
-	brmSingleMemWrite(0x0121, 0xC423); // command to read data
+	brmSingleMemWrite(0x0121, 0xC423); // command to read data. r24. transmit. sa 1. 3 words
 
 	brmSingleMemWrite(0x01C0, 0x0080); // control word . Bus A
-	brmSingleMemWrite(0x01C1, 0xD428); // command to read data. 8 words .0xD438 is 20 words
-
+	brmSingleMemWrite(0x01C1, 0xD438); // command to read data. 0xD438 is 24 words
+	//11010-1-00001-11000 ---> rt26,transmit, sa1,24 words
 
 
 	brmSingleRegWrite(0x0003, 0x0002); //go for one frame
@@ -132,43 +134,45 @@ void brmBCexample(void)
 	  xil_printf("check read mem_addr 0x0007: %0x \n\r",data16); // 0x0160
 
 	data16 = brmSingleMemRead(0x0160);
-	  xil_printf("check read mem_addr 0x0160: %0x \n\r",data16); // 0x0080
+	xil_printf("check read mem_addr 0x0160: %0x \n\r",data16); // 0x0080
 	data16 = brmSingleMemRead(0x0161);
-	  xil_printf("check read mem_addr 0x0161: %0x \n\r",data16); // 0xCC24
+	xil_printf("check read mem_addr 0x0161: %0x \n\r",data16); // 0xCC24
 	data16 = brmSingleMemRead(0x0162);
-	  xil_printf("check read mem_addr 0x0162: %0x \n\r",data16); // 0xCC24
+	xil_printf("check read mem_addr 0x0162: %0x \n\r",data16); // 0xCC24
 	data16 = brmSingleMemRead(0x0163);
-	  xil_printf("check read mem_addr 0x0163: %0x \n\r",data16); // 0xC800
+	xil_printf("check read mem_addr 0x0163: %0x \n\r",data16); // 0xC800
 	data16 = brmSingleMemRead(0x0164);
-	  xil_printf("check read mem_addr 0x0164: %0x \n\r",data16); // 0x0001
+	xil_printf("check read mem_addr 0x0164: %0x \n\r",data16); // 0x0001
 	data16 = brmSingleMemRead(0x0165);
-	  xil_printf("check read mem_addr 0x0165: %0x \n\r",data16); // 0x0002
+	xil_printf("check read mem_addr 0x0165: %0x \n\r",data16); // 0x0002
 	data16 = brmSingleMemRead(0x0166);
-	  xil_printf("check read mem_addr 0x0166: %0x \n\r",data16); // 0x0003
+	xil_printf("check read mem_addr 0x0166: %0x \n\r",data16); // 0x0003
 	data16 = brmSingleMemRead(0x0167);
-	  xil_printf("check read mem_addr 0x0167: %0x \n\r",data16); // 0x0004
+	xil_printf("check read mem_addr 0x0167: %0x \n\r",data16); // 0x0004
+	data16 = brmSingleMemRead(0x0168);
+	xil_printf("check read mem_addr 0x0168: %0x \n\r",data16); //
 
-		data16 = brmSingleMemRead(0x0120);
-		  xil_printf("check read mem_addr 0x0120: %0x \n\r",data16); // 0x0080
-		data16 = brmSingleMemRead(0x0121);
-		  xil_printf("check read mem_addr 0x0121: %0x \n\r",data16); // 0xC423
-		data16 = brmSingleMemRead(0x0122);
-		  xil_printf("check read mem_addr 0x0122: %0x \n\r",data16); // 0xC423
-		data16 = brmSingleMemRead(0x0123);
-		  xil_printf("check read mem_addr 0x0123: %0x \n\r",data16); // 0xC000
-		data16 = brmSingleMemRead(0x0124);
-		  xil_printf("check read mem_addr 0x0124: %0x \n\r",data16); // 0xA001
-		data16 = brmSingleMemRead(0x0125);
-		  xil_printf("check read mem_addr 0x0125: %0x \n\r",data16); // 0xB002
-		data16 = brmSingleMemRead(0x0126);
-		  xil_printf("check read mem_addr 0x0126: %0x \n\n\r",data16); // 0xC003
+	data16 = brmSingleMemRead(0x0120);
+	  xil_printf("check read mem_addr 0x0120: %0x \n\r",data16); // 0x0080
+	data16 = brmSingleMemRead(0x0121);
+	  xil_printf("check read mem_addr 0x0121: %0x \n\r",data16); // 0xC423
+	data16 = brmSingleMemRead(0x0122);
+	  xil_printf("check read mem_addr 0x0122: %0x \n\r",data16); // 0xC423
+	data16 = brmSingleMemRead(0x0123);
+	  xil_printf("check read mem_addr 0x0123: %0x \n\r",data16); // 0xC000
+	data16 = brmSingleMemRead(0x0124);
+	  xil_printf("check read mem_addr 0x0124: %0x \n\r",data16); // 0xA001
+	data16 = brmSingleMemRead(0x0125);
+	  xil_printf("check read mem_addr 0x0125: %0x \n\r",data16); // 0xB002
+	data16 = brmSingleMemRead(0x0126);
+	  xil_printf("check read mem_addr 0x0126: %0x \n\n\r",data16); // 0xC003
 
-			data16 = brmSingleMemRead(0x000C);
-			  xil_printf("check read mem_addr 0x000C: %0x \n\r",data16); // 0x8010
-			data16 = brmSingleMemRead(0x000E);
-			  xil_printf("check read mem_addr 0x000E: %0x \n\r",data16); // 0x0000
-			data16 = brmSingleMemRead(0x000F);
-			  xil_printf("check read mem_addr 0x000F: %0x \n\r",data16); // 0x0160
+	data16 = brmSingleMemRead(0x000C);
+	  xil_printf("check read mem_addr 0x000C: %0x \n\r",data16); // 0x8010
+	data16 = brmSingleMemRead(0x000E);
+	  xil_printf("check read mem_addr 0x000E: %0x \n\r",data16); // 0x0000
+	data16 = brmSingleMemRead(0x000F);
+	  xil_printf("check read mem_addr 0x000F: %0x \n\r",data16); // 0x0160
 
 
 //		data16 = brmSingleMemRead(0x01C0);
@@ -191,12 +195,14 @@ void brmBCexample(void)
 //		  xil_printf("check read mem_addr 0x01C8: %0x \n\r",data16); // 0x
 
 		u16 data[50];
-        int WordNum = 8;
+        int WordNum = 24;
+        u16 base = 0x01C0;
 
-		brmBurstMemRead(0x01C0,WordNum,data);
-		  	  for (int i=0;i<(WordNum+4);i++){
-		  		  	  xil_printf("check read mem_addr: %0x \n\r",data[i]);
-		  	  }
+		//brmBurstMemRead(0x01C0,WordNum,data);
+		 for (int i=0;i<(WordNum+4);i++){
+			  	  data[i] = brmSingleMemRead(base+i);
+			  	  xil_printf("check read mem_addr %0x: %0x \n\r",(base+i),data[i]);
+		 }
 
 
 //	  u16 *data;
