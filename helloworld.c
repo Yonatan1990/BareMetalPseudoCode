@@ -46,6 +46,7 @@
  */
 
 #include <stdio.h>
+
 #include "xil_printf.h"
 #include "1553.h"
 #include "brmMASTER.h"
@@ -59,16 +60,22 @@ int main()
 
     u16 data;
 
-    	xil_printf( "Hello from standalone example main\n\r" );
-    //some testing
 
-    	int addr = 0x10;
+    xil_printf( "Hello from Standalone example main\n\r" );
+    //some memory testing
+
+    	int addr = 0x1A;
 
     	Xil_Out16(XPAR_AXI_BRAM_CTRL_0_S_AXI_BASEADDR+0x20000+addr*2,0x1111);
 
     	data = Xil_In16(XPAR_AXI_BRAM_CTRL_0_S_AXI_BASEADDR+0x20000+addr*2);
 
     	xil_printf("the data memory is:%0x\n\r",data);
+
+   //some register testing
+    	data = Xil_In16(XPAR_AXI_BRAM_CTRL_0_S_AXI_BASEADDR+0x00000+0x1A*2);
+    	if (data == 0x0000)
+    		printf("Some error in read/write registers\n\r");
 
 //    	data = Xil_In16(XPAR_AXI_BRAM_CTRL_0_S_AXI_BASEADDR+REG_OFF+0x12*2);// C0010002 ---> 0x10002 ---> memory 0x0001
 //
@@ -79,12 +86,12 @@ int main()
 
 
 
-    	  xil_printf("read version register:%0x\n\r",brmSingleRegRead(0x1A));
+    	  xil_printf("BRM1553D version register:%0x\n\r",brmSingleRegRead(0x1A));
 
     	  if (brmSingleRegRead(0xE)>>15)
-    		  xil_printf("KEY is NOT present\n\r");
+    		  xil_printf("KEY is NOT attached\n\r");
     	  else
-    		  xil_printf("KEY is  present\n\n\r");
+    		  xil_printf("KEY is attached\n\n\r");
 
     		for (int i = 0; i < 32; i++)   // write data first to spimstr
     			{
