@@ -46,7 +46,6 @@
  */
 
 #include <stdio.h>
-#include "platform.h"
 #include "xil_printf.h"
 #include "1553.h"
 #include "brmMASTER.h"
@@ -56,7 +55,7 @@
 
 int main()
 {
-    init_platform();
+
 
     u16 data;
 
@@ -97,6 +96,6 @@ int main()
 
           brmBCexample();
 
-    cleanup_platform();
+
     return 0;
 }
