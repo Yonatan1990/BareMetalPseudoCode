@@ -81,6 +81,8 @@ void brmBCexample(void)
 	brmSingleMemWrite(0x01C0, 0x0080); // control word . Bus A
 	brmSingleMemWrite(0x01C1, 0xD438); // command to read data. 0xD438 is 24 words
 	//11010-1-00001-11000 ---> rt26,transmit, sa1,24 words
+	//Notice to update the right number of words also in the Composer
+	//in order for the data to be shown on the Monitor
 
 
 	brmSingleRegWrite(0x0003, 0x0002); //go for one frame
