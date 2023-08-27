@@ -449,8 +449,8 @@ void brmBC_FreeRTOS(void)
 	brmSingleRegWrite(0x0003, 0x0002); //go for one frame
 
 	// wait for 400 us
-    //sleep(1);
-	//data16 = brmSingleRegRead (0x0006);
+    usleep(1000);  // sleep was not working
+ 	//data16 = brmSingleRegRead (0x0006);
 		//xil_printf("read register 0x0006:%0x \n\r",data16);
 	// verify frame complete - 8009
 	// now verify data is correct
