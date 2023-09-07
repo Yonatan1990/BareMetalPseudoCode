@@ -1,5 +1,3 @@
 first commit
 second
 third
-
-i add this commit then delete
