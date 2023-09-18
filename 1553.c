@@ -1,8 +1,6 @@
-#include "mem_rw.h"
 #include "brmMaster.h"
-#include "Types.h"
-#include <unistd.h>
-#include "stdio.h"
+#include "xil_io.h"
+#include "sleep.h"
 
 //#define ONE_FRAME
 
